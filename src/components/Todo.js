@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import TodoList from "./TodoList";
 import TodoForm from "./TodoForm";
 import "./Todo.css";
 const Todo = () => {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(() => {
+    const storedTodos = localStorage.getItem("todos");
+    if (storedTodos) {
+      return JSON.parse(storedTodos);
+    }
+    return [];
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
 
-  useEffect(() => {
-    const storedTodos = localStorage.getItem("todos");
-    if (storedTodos) {
-      setTodos(JSON.parse(storedTodos));
-    }
-  }, []);
-
-  useEffect(() => {
+  useMemo(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
 
@@ -40,9 +39,9 @@ const Todo = () => {
   };
 
   const filteredTodos = todos.filter((todo) => {
-    const searchWords = searchQuery.toLowerCase().split(/\s+/);
+    const searchWords = searchQuery.toLowerCase().trim();
     return (
-      searchWords.every((word) => todo.text.toLowerCase().includes(word)) &&
+      todo.text.toLowerCase().includes(searchWords) &&
       (filter == "all" ||
         (filter == "completed" && todo.completed) ||
         (filter == "incomplete" && !todo.completed))
