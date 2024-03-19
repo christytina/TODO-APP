@@ -1,7 +1,9 @@
 import React from "react";
 import TodoItem from "./TodoItem";
+import { useTheme } from "./ThemeContext";
 
 const TodoList = ({ todos, onDelete, onToggle, filter }) => {
+  const { theme } = useTheme();
   const filteredTodos = todos.filter((todo) => {
     if (filter === "completed") {
       return todo.completed;
@@ -12,7 +14,7 @@ const TodoList = ({ todos, onDelete, onToggle, filter }) => {
   });
 
   return (
-    <div>
+    <div className={`todo-list ${theme}`}>
       {filteredTodos.map((todo) => (
         <TodoItem
           key={todo.id}

@@ -2,7 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import TodoList from "./TodoList";
 import TodoForm from "./TodoForm";
 import "./Todo.css";
+import { useTheme } from "./ThemeContext";
 const Todo = () => {
+  const { theme, toggleTheme } = useTheme();
   const [todos, setTodos] = useState(() => {
     const storedTodos = localStorage.getItem("todos");
     if (storedTodos) {
@@ -49,11 +51,18 @@ const Todo = () => {
   });
 
   return (
-    <div className="container">
+    <div className={`container ${theme}`}>
       <h1>Todo App</h1>
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <button onClick={toggleTheme}>Toggle Theme</button>
+      </div>
       <TodoForm onAdd={addTodo} />
       <div className="filters">
         <input
+          style={{
+            backgroundColor: theme === "dark" ? "#333" : "#fff",
+            color: theme === "dark" ? "#fff" : "#333",
+          }}
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
